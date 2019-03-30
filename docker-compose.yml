@@ -5,8 +5,13 @@ services:
       context: ./server
       dockerfile: Dockerfile
     init: true
-    ports:
-      - 80:80
+    network_mode: bridge
+    expose:
+      - '80'
+    environment:
+      VIRTUAL_HOST:
+      LETSENCRYPT_HOST:
+      LETSENCRYPT_EMAIL:
     volumes:
       - ./server:/var/www/html
       - ./db:/run/db
