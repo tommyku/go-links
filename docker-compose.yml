@@ -23,5 +23,4 @@ services:
       dockerfile: Dockerfile
     network_mode: bridge
     volumes:
-      - ./server:/var/www/html
       - ./db:/run/db
