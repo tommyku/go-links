@@ -1,0 +1,12 @@
+version: '2.2'
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    init: true
+    ports:
+      - 80:80
+    volumes:
+      - ./server:/var/www/html
+      - ./db:/run/db

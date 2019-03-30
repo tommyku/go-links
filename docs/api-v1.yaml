@@ -1,0 +1,171 @@
+swagger: "2.0"
+info:
+  description: "Poor man's GoLinks"
+  version: "0.1.0"
+  title: "Golk"
+host: "go.ck2ustudio.com"
+basePath: "/v1"
+schemes:
+- "https"
+paths:
+  /:
+    get:
+      tags:
+      - "Link"
+      summary: "Redirect user given a short code"
+      operationId: "getTo"
+      responses:
+        302:
+          description: "Redirect to resolved URL"
+          headers:
+            Location:
+              type: "string"
+        400:
+          description: "Invalid/missing API key or missing code"
+        404:
+          description: "Short code not found"
+      parameters:
+      - name: "apiKey"
+        in: "query"
+        description: "API key that is required to retrieve a link"
+        required: true
+        type: "string"
+      - name: "code"
+        in: "query"
+        description: "Short code for the link"
+        required: true
+        type: "string"
+  /find:
+    get:
+      tags:
+      - "Link"
+      summary: "Find where a short code is pointing to"
+      operationId: "getFind"
+      responses:
+        200:
+          description: "Found the Link object"
+          schema:
+            $ref: "#/definitions/LinkFull"
+        400:
+          description: "Invalid/missing API key or missing code"
+        404:
+          description: "Short code not found"
+      parameters:
+      - name: "apiKey"
+        in: "query"
+        description: "API key that is required to retrieve a link"
+        required: true
+        type: "string"
+      - name: "code"
+        in: "query"
+        description: "Short code for the link"
+        required: true
+        type: "string"
+  /link:
+    post:
+      tags:
+      - "Link"
+      summary: "Creates a URL with a short code"
+      operationId: "postLink"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created link"
+        required: true
+        schema:
+          $ref: "#/definitions/LinkBasic"
+      responses:
+        200:
+          description: "Found the Link object"
+          schema:
+            $ref: "#/definitions/LinkFull"
+        409:
+          description: "Conflict with existing code"
+        400:
+          description: "Invalid/missing API key or missing code"
+    delete:
+      tags:
+      - "Link"
+      summary: "Deletes a link"
+      operationId: "deleteLink"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Link to delete"
+        required: true
+        schema:
+          $ref: "#/definitions/LinkBasic"
+      responses:
+        200:
+          description: "Found and deleted the Link object"
+          schema:
+            $ref: "#/definitions/LinkBasic"
+        400:
+          description: "Invalid/missing API key or missing code"
+        404:
+          description: "Link with the given code is not found"
+  /apiKey:
+    get:
+      tags:
+      - "API Key"
+      summary: "Create and get a new API key"
+      description: ""
+      operationId: "getApiKey"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ApiKey"
+        403:
+          description: "API Key request is disabled in setting"
+definitions:
+  ApiKey:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      apiKey:
+        type: "string"
+        description: "API Key"
+        example: "ABCDEFG12345678"
+  LinkBasic:
+    type: "object"
+    required:
+    - "code"
+    - "apiKey"
+    properties:
+      code:
+        type: "string"
+        description: "Short code"
+        example: "exmaple"
+      destination:
+        type: "string"
+        description: "Resolved URL"
+        example: "https://example.com"
+      apiKey:
+        type: "string"
+        description: "API Key"
+        example: "ABCDEFG12345678"
+  LinkFull:
+    allOf:
+      - $ref: '#/definitions/LinkBasic'
+      - type: "object"
+        required:
+        - ""
+        properties:
+          url:
+            type: "string"
+            description: "Look up link for redirection"
+            example: "https://go.local/?apiKey=ABCDEFG12345678&code=example"
