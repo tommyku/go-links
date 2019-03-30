@@ -1,11 +1,11 @@
-FROM php:7.3.3-apache
+FROM php:7.2-apache
 
 ENV PROJECT_ROOT /var/www/html
 
 WORKDIR $PROJECT_ROOT
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git zip && \
+    apt-get install -y --no-install-recommends git zip unzip curl ssh && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY composer.json $PROJECT_ROOT
@@ -17,3 +17,4 @@ COPY . $PROJECT_ROOT
 RUN a2enmod rewrite
 
 EXPOSE 80
+
