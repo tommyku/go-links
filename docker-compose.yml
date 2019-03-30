@@ -1,17 +1,27 @@
 version: '2.2'
 services:
-  server:
+  web:
+    image: nginx:latest
+    network_mode: bridge
+    expose:
+      - 80
+    volumes:
+      - ./server:/var/www/html
+      - ./site.conf:/etc/nginx/conf.d/default.conf:ro
+    environment:
+      VIRTUAL_HOST:
+      VIRTUAL_PORT:
+      LETSENCRYPT_HOST:
+      LETSENCRYPT_EMAIL:
+    links:
+      - php
+    depends_on:
+      - php
+  php:
     build:
       context: ./server
       dockerfile: Dockerfile
-    init: true
     network_mode: bridge
-    expose:
-      - '80'
-    environment:
-      VIRTUAL_HOST:
-      LETSENCRYPT_HOST:
-      LETSENCRYPT_EMAIL:
     volumes:
       - ./server:/var/www/html
       - ./db:/run/db

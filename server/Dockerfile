@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.2-fpm
 
 ENV PROJECT_ROOT /var/www/html
 
@@ -14,7 +14,4 @@ RUN composer install --no-dev --optimize-autoloader
 
 COPY . $PROJECT_ROOT
 
-RUN a2enmod rewrite
-
 EXPOSE 80
-
