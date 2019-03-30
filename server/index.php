@@ -10,7 +10,7 @@ use Medoo\Medoo;
 
 $config = [
     'settings' => [
-        'disableNewApiKey' => true,
+        'disableNewApiKey' => false,
         'host' => 'http://localhost'
     ]
 ];
