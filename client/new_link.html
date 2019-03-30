@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Golk - new Link</title>
+    <style>
+      html {
+        font-family: sans-serif;
+        font-size: large;
+        line-height: 1.4;
+      }
+      input[type=text] {
+        padding: 4px;
+        min-width: 20rem;
+      }
+      section {
+        margin-bottom: 0.5rem;
+      }
+      label {
+        display: inline-block;
+        min-width: 10rem;
+      }
+    </style>
+  </head>
+  <body>
+    <form method='POST'>
+      <section>
+        <label for='endpoint'>API Endpoint</label>
+        <input type='text' id='endpoint' name='endpoint' />
+      </section>
+      <section>
+        <label for='apiKey'>API Key</label>
+        <input type='text' id='apiKey' name='apiKey' />
+      </section>
+      <section>
+        <label for='Destination'>Destination</label>
+        <input type='text' id='destination' name='destination' />
+      </section>
+      <section>
+        <label for='Code'>Code</label>
+        <input type='text' id='code' name='code' />
+      </section>
+      <section>
+        <input type='submit' value='Submit' />
+      </section>
+    </form>
+    <script>
+      const storedEndpoint = localStorage.getItem('endpoint');
+      const storedApiKey = localStorage.getItem('apiKey');
+      document.querySelector('input#endpoint').value = storedEndpoint;
+      document.querySelector('input#apiKey').value = storedApiKey;
+
+      document.querySelector('form').addEventListener('submit', e => {
+        const $form = e.target;
+        const endpoint = $form.querySelector('input#endpoint').value;
+        const apiKey = $form.querySelector('input#apiKey').value;
+        const destination = $form.querySelector('input#destination').value;
+        const code = $form.querySelector('input#code').value;
+
+        fetch(`${endpoint}/link`, {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            apiKey, code, destination
+          })
+        })
+          .then(r => r.json())
+          .then(link => {
+            const $a = document.createElement('a');
+            $a.setAttribute('href', link.url);
+            $a.textContent = link.url;
+            document.body.appendChild($a);
+          })
+          .then(() => {
+            localStorage.setItem('endpoint', endpoint);
+            localStorage.setItem('apiKey', apiKey);
+          })
+          .catch(alert);
+
+        e.preventDefault();
+      });
+    </script>
+  </body>
+</html>
