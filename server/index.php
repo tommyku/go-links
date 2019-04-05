@@ -142,7 +142,7 @@ $app->GET('/v1/find', function($request, $response, $args) {
  * Notes: 
 
  */
-$app->GET('/v1/', function($request, $response, $args) {
+$app->GET('/v1[/]', function($request, $response, $args) {
     $queryParams = $request->getQueryParams();
     $apiKey = $queryParams['apiKey'];
     $code = $queryParams['code'];
